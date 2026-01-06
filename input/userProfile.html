@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dietary and Lifestyle Questionnaire</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; /* Prevent scrolling */
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .question {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            text-align: center;
+            padding: 20px;
+        }
+        .question.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .question h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .question p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #7f8c8d;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        input[type="number"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .radio-group label, .checkbox-group label {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .radio-group label:hover, .checkbox-group label:hover {
+            background-color: #ecf0f1;
+        }
+        .radio-group input, .checkbox-group input {
+            margin-right: 10px;
+        }
+        .other-input {
+            margin-top: 10px;
+            display: none;
+        }
+        .progress {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #next-btn {
+            background-color: #3498db;
+            color: #fff;
+        }
+        #next-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        #prev-btn {
+            background-color: #95a5a6;
+            color: #fff;
+        }
+        .summary {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            padding: 20px;
+        }
+        .summary.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .summary h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .summary-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+        .summary-item strong {
+            color: #2c3e50;
+        }
+        #edit-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            .question h2 {
+                font-size: 20px;
+            }
+            .buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress" id="progress">Question 1 of 12</div>
+        
+        <!-- Questions -->
+        <div id="q1" class="question active" data-key="age">
+            <h2>What is your age?</h2>
+            <p>Please enter your age in years.</p>
+            <div class="input-group">
+                <input type="number" id="age" min="1" max="120" placeholder="e.g., 25">
+            </div>
+        </div>
+        
+        <div id="q2" class="question" data-key="gender">
+            <h2>What is your gender?</h2>
+            <p>Select your gender.</p>
+            <div class="radio-group">
+                <label><input type="radio" name="gender" value="Male"> Male</label>
+                <label><input type="radio" name="gender" value="Female"> Female</label>
+                <label><input type="radio" name="gender" value="Other"> Other</label>
+            </div>
+        </div>
+        
+        <div id="q3" class="question" data-key="height">
+            <h2>What is your height?</h2>
+            <p>Enter your height in centimeters.</p>
+            <div class="input-group">
+                <input type="number" id="height" min="50" max="250" placeholder="e.g., 170">
+            </div>
+        </div>
+        
+        <div id="q4" class="question" data-key="weight">
+            <h2>What is your weight?</h2>
+            <p>Enter your weight in kilograms.</p>
+            <div class="input-group">
+                <input type="number" id="weight" min="20" max="300" placeholder="e.g., 70">
+            </div>
+        </div>
+        
+        <div id="q5" class="question" data-key="activityLevel">
+            <h2>What is your activity level?</h2>
+            <p>Select your typical activity level.</p>
+            <div class="radio-group">
+                <label><input type="radio" name="activity" value="Sedentary"> Sedentary (little to no exercise)</label>
+                <label><input type="radio" name="activity" value="Moderate"> Moderate (light exercise 1-3 days/week)</label>
+                <label><input type="radio" name="activity" value="Active"> Active (moderate exercise 3-5 days/week)</label>
+                <label><input type="radio" name="activity" value="Very Active"> Very Active (hard exercise 6-7 days/week)</label>
+            </div>
+        </div>
+        
+        <div id="q6" class="question" data-key="occupation">
+            <h2>What is your occupation type?</h2>
+            <p>Select your occupation type.</p>
+            <div class="input-group">
+                <select id="occupation">
+                    <option value="">Select...</option>
+                    <option value="Student">Student</option>
+                    <option value="Desk Job">Desk Job</option>
+                    <option value="Physical Job">Physical Job</option>
+                    <option value="Mixed">Mixed</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="q7" class="question" data-key="dietaryGoal">
+            <h2>What is your dietary goal?</h2>
+            <p>Select your primary dietary goal.</p>
+            <div class="radio-group">
+                <label><input type="radio" name="goal" value="Weight Loss"> Weight Loss</label>
+                <label><input type="radio" name="goal" value="Weight Gain"> Weight Gain</label>
+                <label><input type="radio" name="goal" value="Maintenance"> Maintenance</label>
+            </div>
+        </div>
+        
+        <div id="q8" class="question" data-key="generalLifestyle">
+            <h2>What is your general lifestyle?</h2>
+            <p>Select your general lifestyle.</p>
+            <div class="radio-group">
+                <label><input type="radio" name="lifestyle" value="Sedentary"> Sedentary</label>
+                <label><input type="radio" name="lifestyle" value="Balanced"> Balanced</label>
+                <label><input type="radio" name="lifestyle" value="Active"> Active</label>
+            </div>
+        </div>
+        
+        <div id="q9" class="question" data-key="dietaryPreference">
+            <h2>What is your dietary preference?</h2>
+            <p>Select your dietary preference.</p>
+            <div class="radio-group">
+                <label><input type="radio" name="preference" value="Vegetarian"> Vegetarian</label>
+                <label><input type="radio" name="preference" value="Vegan"> Vegan</label>
+                <label><input type="radio" name="preference" value="Non-Vegetarian"> Non-Vegetarian</label>
+                <label><input type="radio" name="preference" value="Eggetarian"> Eggetarian</label>
+            </div>
+        </div>
+        
+        <div id="q10" class="question" data-key="dietaryRestrictions">
+            <h2>Do you have any dietary restrictions?</h2>
+            <p>Select all that apply.</p>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="restrictions" value="Allergies"> Allergies</label>
+                <label><input type="checkbox" name="restrictions" value="Lactose Intolerance"> Lactose Intolerance</label>
+                <label><input type="checkbox" name="restrictions" value="Gluten-Free"> Gluten-Free</label>
+                <label><input type="checkbox" name="restrictions" value="None"> None</label>
+            </div>
+        </div>
+        
+        <div id="q11" class="question" data-key="healthBackground">
+            <h2>What is your health background?</h2>
+            <p>Select all that apply.</p>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="health" value="Diabetes"> Diabetes</label>
+                <label><input type="checkbox" name="health" value="BP"> High Blood Pressure (BP)</label>
+                <label><input type="checkbox" name="health" value="Thyroid"> Thyroid Issues</label>
+                <label><input type="checkbox" name="health" value="None"> None</label>
+                <label><input type="checkbox" id="other-health" value="Other"> Other</label>
+            </div>
+            <div class="other-input" id="other-health-input">
+                <input type="text" placeholder="Please specify">
+            </div>
+        </div>
+        
+        <div id="q12" class="question" data-key="comments">
+            <h2>Any nutrition-related notes or comments?</h2>
+            <p>This is optional.</p>
+            <div class="input-group">
+                <textarea id="notes" rows="4" placeholder="Enter any additional notes..."></textarea>
+            </div>
+        </div>
+        
+        <!-- Summary -->
+        <div id="summary" class="summary">
+            <button id="edit-btn">Edit</button>
+            <h2>Summary</h2>
+            <div id="summary-content"></div>
+        </div>
+        
+        <!-- Buttons -->
+        <div class="buttons">
+            <button id="prev-btn">Previous</button>
+            <button id="next-btn" disabled>Next</button>
+        </div>
+    </div>
+
+    <script>
+const questions = document.querySelectorAll('.question');
+const nextBtn = document.getElementById('next-btn');
+const progress = document.getElementById('progress');
+const prevBtn = document.getElementById('prev-btn');
+
+let currentQuestion = 0;
+const answers = {};
+
+function showQuestion(index) {
+  questions.forEach((q, i) => {
+    q.classList.toggle('active', i === index);
+  });
+
+  progress.textContent = `Question ${index + 1} of ${questions.length}`;
+  validateCurrentQuestion();
+}
+
+function validateCurrentQuestion() {
+  const activeQuestion = questions[currentQuestion];
+  const inputs = activeQuestion.querySelectorAll('input, select, textarea');
+
+  let valid = false;
+
+  inputs.forEach(input => {
+    if (
+      (input.type === 'radio' || input.type === 'checkbox') && input.checked
+    ) valid = true;
+
+    if (
+      input.type !== 'radio' &&
+      input.type !== 'checkbox' &&
+      input.value.trim() !== ''
+    ) valid = true;
+  });
+
+  nextBtn.disabled = !valid;
+}
+
+function saveAnswer() {
+  const activeQuestion = questions[currentQuestion];
+  const key = activeQuestion.dataset.key;
+  const inputs = activeQuestion.querySelectorAll('input, select, textarea');
+
+  let values = [];
+
+  inputs.forEach(input => {
+    if ((input.type === 'radio' || input.type === 'checkbox') && input.checked) {
+      values.push(input.value);
+    } else if (
+      input.type !== 'radio' &&
+      input.type !== 'checkbox' &&
+      input.value.trim() !== ''
+    ) {
+      values.push(input.value.trim());
+    }
+  });
+
+  // Store single value as string, multiple as array
+  if (values.length === 1) {
+    answers[key] = values[0];
+  } else if (values.length > 1) {
+    answers[key] = values;
+  }
+}
+
+
+nextBtn.addEventListener('click', () => {
+  if (nextBtn.disabled) return;
+
+  saveAnswer();
+
+  questions[currentQuestion].classList.remove('active');
+  currentQuestion++;
+
+  if (currentQuestion < questions.length) {
+    setTimeout(() => showQuestion(currentQuestion), 300);
+  } else {
+  localStorage.setItem('userProfile', JSON.stringify(answers));
+  showSummary();
+ }
+});
+
+prevBtn.addEventListener('click', () => {
+  if (currentQuestion === 0) return;
+
+  questions[currentQuestion].classList.remove('active');
+  currentQuestion--;
+
+  showQuestion(currentQuestion);
+});
+
+function showSummary() {
+  // Hide all questions
+  questions.forEach(q => q.classList.remove('active'));
+
+  // Hide navigation and progress
+  document.querySelector('.buttons').style.display = 'none';
+  progress.style.display = 'none';
+
+  // Show summary
+  const summary = document.getElementById('summary');
+  const summaryContent = document.getElementById('summary-content');
+  summaryContent.innerHTML = '';
+
+  Object.entries(answers).forEach(([key, value]) => {
+    const div = document.createElement('div');
+    div.className = 'summary-item';
+
+    const displayValue = Array.isArray(value)
+      ? value.join(', ')
+      : value || '—';
+
+    div.innerHTML = `<strong>${key}:</strong> ${displayValue}`;
+    summaryContent.appendChild(div);
+  });
+
+  summary.classList.add('active');
+}
+
+
+/* 🔴 CRITICAL FIX: revalidate on interaction */
+document.addEventListener('input', validateCurrentQuestion);
+document.addEventListener('change', validateCurrentQuestion);
+
+/* Init */
+showQuestion(currentQuestion);
+</script>
