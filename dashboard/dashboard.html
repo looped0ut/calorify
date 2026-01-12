@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Fitness Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <header>
+    <h1>Health & Fitness Overview</h1>
+    <p id="welcomeText"></p>
+  </header>
+
+  <!-- ROW 1 -->
+  <section class="grid">
+
+    <!-- BMI CARD -->
+    <div class="card">
+      <h3>BMI</h3>
+      <div class="ring-container">
+        <svg width="160" height="160">
+          <circle class="bg" cx="80" cy="80" r="65"/>
+          <circle class="progress" cx="80" cy="80" r="65"/>
+        </svg>
+        <div class="ring-text">
+          <span id="bmiValue"></span>
+          <small>BMI</small>
+        </div>
+      </div>
+      <p id="bmiCategory"></p>
+    </div>
+
+    <!-- CALORIES CARD -->
+    <div class="card">
+      <h3>Daily Calories</h3>
+      <ul class="stats">
+        <li>🔥 Maintenance: <strong id="maintain"></strong> kcal</li>
+        <li>⬇️ Weight Loss: <strong id="loss"></strong> kcal</li>
+        <li>⬆️ Weight Gain: <strong id="gain"></strong> kcal</li>
+      </ul>
+    </div>
+
+  </section>
+
+  <!-- ROW 2 -->
+  <section class="grid">
+
+    <!-- FITNESS SCORE -->
+    <div class="card">
+      <h3>Overall Fitness</h3>
+      <div class="fitness-score">
+        <span id="fitnessScore"></span>/100
+      </div>
+      <p id="fitnessText"></p>
+    </div>
+
+    <!-- ADVICE -->
+    <div class="card">
+      <h3>Personal Advice</h3>
+      <ul id="adviceList"></ul>
+    </div>
+
+  </section>
+
+  <!-- ACTIONS -->
+  <section class="actions">
+    <button onclick="goToMeal()">📸 Meal Calorie Detection</button>
+  </section>
+
+</div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>
