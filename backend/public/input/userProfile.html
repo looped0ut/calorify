@@ -296,8 +296,30 @@ nextBtn.onclick = () => {
   if (current < questions.length) {
     showQuestion(current);
   } else {
-    localStorage.setItem("userProfile", JSON.stringify(answers));
-    window.location.href = "../dashboard/dashboard.html";
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+
+fetch("http://localhost:3000/profile", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    user_id: user.id,
+    age: answers.age,
+    gender: answers.gender,
+    height: answers.height,
+    weight: answers.weight,
+    activityLevel: answers.activityLevel,
+    dietaryGoal: answers.dietaryGoal,
+    generalLifestyle: answers.generalLifestyle,
+    dietaryPreference: answers.dietaryPreference,
+    healthBackground: Array.isArray(answers.healthBackground)
+      ? answers.healthBackground.join(", ")
+      : answers.healthBackground
+  })
+})
+.then(() => {
+  window.location.href = "../dashboard/dashboard.html";
+});
+
   }
 };
 
